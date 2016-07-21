@@ -61,7 +61,7 @@ void Worker::handle(int fd) {
                 std::cout << buf;
                 flush(std::cout);
                 path = buf;
-                buf.clear();
+                //buf.clear();
                 is_path = false;
             }
         } else {
@@ -74,19 +74,19 @@ void Worker::handle(int fd) {
                         path = std::string(path.data(), pos);
                     }
                     path = mPool->dir + path;
-                    std::ifstream file(path, std::ifstream::ate | std::ios::binary);
+                    std::ifstream file(path, std::ios::binary);
                     
                     std::stringstream ss;
                     if(file.good()){
-                        size_t fsize = file.tellg();
-                        file.seekg (0, std::ios::beg);
+                        //size_t fsize = file.tellg();
+                       // file.seekg (0, std::ios::beg);
                         
                         std::string str((std::istreambuf_iterator<char>(file)),
                                         std::istreambuf_iterator<char>());
                         
                         ss << "HTTP/1.0 200 OK\r\n";
                         ss << "Content-Type: text/html\r\n";
-                        ss << "Content-Length: " << fsize  << "\r\n" << "\r\n";
+                       // ss << "Content-Length: " << fsize  << "\r\n" << "\r\n";
                         ss << "Connection: close\r\n\r\n";
                         
                         ss << str;

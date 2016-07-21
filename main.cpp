@@ -6,7 +6,7 @@
 #include "TCPServer.h"
 
 int main(int argc, char **argv) {
-    daemon(1, 0);
+    daemon(1, 1);
     
     std::string host;
     int port = 8080;
