@@ -43,7 +43,7 @@ void TCPServer::Run()
     
     bind(MasterSocket, (struct sockaddr*)(&SockAddr), sizeof(SockAddr));
     
-    set_nonblock(MasterSocket);
+    //set_nonblock(MasterSocket);
     listen(MasterSocket,SOMAXCONN);
     
     int Epoll = epoll_create1(0);
