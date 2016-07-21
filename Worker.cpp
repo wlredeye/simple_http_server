@@ -104,6 +104,7 @@ void Worker::handle(int fd) {
                     int r = send(fd, ss.str().data(), ss.str().size(), MSG_NOSIGNAL);
                     shutdown(fd, SHUT_RDWR);
                     close(fd);
+                    file.close();
                     return;
                 }
             }
