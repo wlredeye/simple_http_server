@@ -67,7 +67,7 @@ void TCPServer::Run()
                 if (SlaveSocket == -1) {
                     continue;
                 }
-                set_nonblock(SlaveSocket);
+                //set_nonblock(SlaveSocket);
                 pool.Enqueue(SlaveSocket);
             }
         }

@@ -49,10 +49,13 @@ void Worker::handle(int fd) {
     
     while((count = recv(fd, &data, 1, MSG_NOSIGNAL)) > 0){
         buf.append(&data, 1);
-        std::cout << buf;
+
         if(data == ' '){
             if(buf == "GET "){
                 is_path = true;
+
+                std::cout << buf;
+                flush(std::cout);
                 buf.clear();
                 continue;
             }
@@ -69,6 +72,10 @@ void Worker::handle(int fd) {
                 int nbytes = buf.size();
                 if(nbytes >=4 && buf[nbytes-1] == '\n' && buf[nbytes-2] == '\r'
                    && buf[nbytes-3] == '\n' && buf[nbytes-4] == '\r'){
+                    
+                    std::cout << buf;
+                    flush(std::cout);
+                    
                     size_t pos = path.find('?');
                     if (pos != std::string::npos) {
                         path = std::string(path.data(), pos);
@@ -97,6 +104,7 @@ void Worker::handle(int fd) {
                     int r = send(fd, ss.str().data(), ss.str().size(), MSG_NOSIGNAL);
                     shutdown(fd, SHUT_RDWR);
                     close(fd);
+                    return;
                 }
             }
         }
