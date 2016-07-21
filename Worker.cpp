@@ -88,20 +88,39 @@ void Worker::handle(int fd) {
                         //size_t fsize = file.tellg();
                        // file.seekg (0, std::ios::beg);
                         
-                        std::string str((std::istreambuf_iterator<char>(file)),
-                                        std::istreambuf_iterator<char>());
-                        
+                        //std::string str((std::istreambuf_iterator<char>(file)),
+                        //                std::istreambuf_iterator<char>());
+                 
                         ss << "HTTP/1.0 200 OK\r\n";
                         ss << "Content-Type: text/html\r\n";
                        // ss << "Content-Length: " << fsize  << "\r\n" << "\r\n";
                         ss << "Connection: close\r\n\r\n";
                         
-                        ss << str;
+                        int r = send(fd, ss.str().data(), ss.str().size(),MSG_NOSIGNAL);
+                        if(r == -1){
+                            shutdown(fd, SHUT_RDWR);
+                            close(fd);
+                            file.close();
+                            return;
+                        }
+                        char chunkToRead[1024];
+                        size_t chunkSize = sizeof(chunkToRead);
+                        file.read(chunkToRead, chunkSize);
+                        while(file.gcount() > 0) {
+                            r = send(fd, chunkToRead, file.gcount(), MSG_NOSIGNAL);
+                            if(r == - 1){
+                                break;
+                            }
+                            file.read(chunkToRead, chunkSize);
+                        }
                         
                     } else {
-                        ss << "HTTP/1.0 404 Not Found\r\nContent-Length: 0\r\nContent-Type: text/html\r\n\r\n";
+                        ss << "HTTP/1.0 404 Not Found\r\n";
+                        ss << "Content-Length: 0\r\n";
+                        ss << "Content-Type: text/html\r\n\r\n";
+                        send(fd, ss.str().data(), ss.str().size(),MSG_NOSIGNAL);
                     }
-                    int r = send(fd, ss.str().data(), ss.str().size(), MSG_NOSIGNAL);
+                    
                     shutdown(fd, SHUT_RDWR);
                     close(fd);
                     file.close();
