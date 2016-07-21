@@ -64,6 +64,9 @@ void TCPServer::Run()
             int currentFd = Events[i].data.fd;
             if(Events[i].data.fd == MasterSocket){
                 int SlaveSocket = accept(MasterSocket, 0, 0);
+                if (SlaveSocket == -1) {
+                    continue;
+                }
                 set_nonblock(SlaveSocket);
                 pool.Enqueue(SlaveSocket);
             }

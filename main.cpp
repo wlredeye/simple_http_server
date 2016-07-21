@@ -6,7 +6,7 @@
 #include "TCPServer.h"
 
 int main(int argc, char **argv) {
-    daemon(1, 1);
+    daemon(1, 0);
     
     std::string host;
     int port = 8080;
@@ -34,6 +34,5 @@ int main(int argc, char **argv) {
     
     tcpsrv->Run();
     
-    std::cout << "Hello, World!\n";
     return 0;
 }
